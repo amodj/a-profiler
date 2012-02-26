@@ -1,10 +1,8 @@
-A profiling tool that I've written as a hobby project. This is a simple profiling tool that can be uesd to profile
-C programs.
-I haven't really tested it's correctness throughly, yet.
+A profiling tool that I've written as a hobby project. This is a simple profiling tool that can be uesd to profile C programs. I haven't really tested it's correctness throughly, yet.
 
 
 HOWTO:
----------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
  - compile the program along with the "aprof.c" file, using the "-finstrument-functions" compile time option.
               eg: gcc -g proc1.c proc2.c aprof.c -finstrument-functions
               
@@ -16,21 +14,21 @@ HOWTO:
 
 
 Limitations:
-----------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
  - Does not work with recursive functions.
  - Profiles ALL the functions. You cannot selectively choose which functions to profile
    and which to leave alone.
  - Cannot use with multiple threads.
 
 Advantages:
----------------------------------------------------------------------------------------------------- 
+-------------------------------------------------------------------------------------
  - The profiler code itself is not accounted for anywhere. OK that was a bit bold. Some neglible stuff from the profiler does get accounted :-)
    But I've tried to keep it to a minimum.
  - The user does not need to modify the existing code for profiling (except the Makefile).
 
 
 TODO:
-----------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
  - Support recursive functions.
  - Give users the facility to define "profile points" wherein the user will be able to start the profiling from that point on upto a certain point in future.
  - Better output !!
@@ -39,17 +37,12 @@ TODO:
 
 
 How it works:
-----------------------------------------------------------------------------------------------------
-GCC provides a compile-time option "-finstrument-functions" which basically adds some piece of code at the start
-and exit of each function that essentially calls "__cyg_profile_func_enter()" just after entry into the function and
-"__cyg_profile_exit()" just before unwinding the function.
+-------------------------------------------------------------------------------------
+GCC provides a compile-time option "-finstrument-functions" which basically adds some piece of code at the start and exit of each function that essentially calls "__cyg_profile_func_enter()" just after entry into the function and "__cyg_profile_exit()" just before unwinding the function.
 
-So in __cyg_profile_enter, we start tracking the time for a function, that can be identified via the arguments passed. 
-We also "stop" accounting for the "self_time" of the parent function and instead start tracking the "child_time" 
-of the parent function.
+So in __cyg_profile_enter, we start tracking the time for a function, that can be identified via the arguments passed. We also "stop" accounting for the "self_time" of the parent function and instead start tracking the "child_time" of the parent function.
 
-In __cyg_profile_exit, we account for how many ticks the current function has taken, i.e. the "self_time" of the current function. 
-We also add this time to the "child_time" of the parent function. And we start tracking the parent function's "self_time" again.
+In __cyg_profile_exit, we account for how many ticks the current function has taken, i.e. the "self_time" of the current function. We also add this time to the "child_time" of the parent function. And we start tracking the parent function's "self_time" again.
 
 This gives us 2 metrics:
      - self ticks: The ticks taken by the function in question only. It does not include any ticks that are taken by any of it's children.
@@ -57,6 +50,6 @@ This gives us 2 metrics:
       
 
 Changelog:
-------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------
 2012.02.26:
   -- Version 0.1
