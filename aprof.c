@@ -105,7 +105,8 @@ DONT_PROF static __attribute__((destructor))void print_profiler_op()
         printf("----------------------------------------------------------------------\n");
 
         while(runner){
-                printf("%p                  %10llu                %10llu\n", runner->eip, runner->self_time, runner->self_time + runner->child_time);
+                printf("%p                  %10llu                %10llu\n", 
+                       runner->eip, runner->self_time, runner->self_time + runner->child_time);
                 runner = runner->next_node;
         }
         printf("\n\n");
